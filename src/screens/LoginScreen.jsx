@@ -1,9 +1,8 @@
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { TextInput, Button, Text, Card } from "react-native-paper";
-import { Avatar } from "react-native-paper";
+import { TextInput, Button, Text, Avatar } from "react-native-paper";
 
-export default function LoginScreen() {
+function LoginScreen() {
 
     return (
         <View style={styles.container}>
@@ -73,3 +72,5 @@ const styles = StyleSheet.create({
         color: '#777',
     },
 });
+
+export default LoginScreen;
