@@ -12,10 +12,10 @@ function App() {
   return (
     <SafeAreaProvider>
       {/* <LoginScreen /> */}
-      {/* <RegisterScreen /> */}
+      <RegisterScreen />
       {/* <DashboardScreen /> */}
       {/* <SearchScreen /> */}
-      <AddStudentScreen />
+      {/* <AddStudentScreen /> */}
       {/* <StudentListScreen /> */}
     </SafeAreaProvider>
   )

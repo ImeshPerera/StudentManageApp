@@ -1,15 +1,46 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button, Text, Avatar } from "react-native-paper";
+import axios from "axios";
 
 function RegisterScreen() {
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+
+    async function registerUser() {
+        if(!name || !email || !password || !confirmPassword) {
+            Alert.alert("Registration Failed", "Please fill in all fields.");
+            return;
+        }
+        
+        if (password != confirmPassword) {
+            Alert.alert("Registration Failed", "Passwords do not match.");
+            return;
+        }
+
+        try {
+            const response = await axios.post("https://student-api.acpt.lk/api/register", {
+                name: name,
+                email: email,
+                password: password
+            });
+            console.log(response);
+            Alert.alert("Registration Successful", "Account created successfully.");
+        } catch (error) {
+            console.error(error);
+            Alert.alert("Registration Failed", "An error occurred while creating the account.");
+        }
+    }
 
     return (
         <View style={styles.container}>
             <Avatar.Icon size={120} icon="school" color="#3f7af6" style={styles.logo} />
             <Text style={styles.title}>Create Account</Text>
-            <TextInput label="Name" mode="outlined" style={styles.input} activeOutlineColor="#3f7af6"/>
-            <TextInput label="Email" mode="outlined" style={styles.input} activeOutlineColor="#3f7af6"/>
+            <TextInput label="Name" mode="outlined" style={styles.input} activeOutlineColor="#3f7af6" value={name} onChangeText={setName} />
+            <TextInput label="Email" mode="outlined" style={styles.input} activeOutlineColor="#3f7af6" value={email} onChangeText={setEmail} />
             <TextInput
                 label="Password"
                 mode="outlined"
@@ -17,6 +48,8 @@ function RegisterScreen() {
                 right={<TextInput.Icon icon="eye" />}
                 style={styles.input}
                 activeOutlineColor="#3f7af6"
+                value={password}
+                onChangeText={setPassword}
             />
             <TextInput
                 label="Confirm Password"
@@ -25,8 +58,10 @@ function RegisterScreen() {
                 right={<TextInput.Icon icon="eye" />}
                 style={styles.input}
                 activeOutlineColor="#3f7af6"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
             />
-            <Button mode="contained" style={styles.mainButton} labelStyle={styles.buttonLabel} onPress={() => { }} buttonColor="#3f7af6">
+            <Button mode="contained" style={styles.mainButton} labelStyle={styles.buttonLabel} onPress={registerUser} buttonColor="#3f7af6">
                 Register
             </Button>
             <Text style={styles.footerText}>Already have an account? <Text style={{ color: '#3f7af6' }}>Login</Text></Text>
