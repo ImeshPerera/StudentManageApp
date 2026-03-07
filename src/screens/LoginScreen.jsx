@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button, Text, Avatar } from "react-native-paper";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 function LoginScreen() {
-
+    
+    const navigation = useNavigation();
+    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -22,6 +25,7 @@ function LoginScreen() {
             });
             console.log(response);
             Alert.alert("Login Successful", `Welcome back, ${response.data.user.name}!`);
+            navigation.navigate("DashboardScreen");
         } catch (error) {
             console.error(error);
             Alert.alert("Login Failed", "Invalid email or password.");
@@ -56,7 +60,7 @@ function LoginScreen() {
             <Button mode="text" uppercase={false} labelStyle={styles.forgotButton} onPress={() => { }}>
                 Forgot password?
             </Button>
-            <Text style={styles.footerText}>Don't have an account? <Text style={{ color: '#3f7af6' }}>Register</Text></Text>
+            <Text style={styles.footerText}>Don't have an account? <Text style={{ color: '#3f7af6' }} onPress={() => navigation.navigate("RegisterScreen")}>Register</Text></Text>
         </View>
     );
 }

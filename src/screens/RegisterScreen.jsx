@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button, Text, Avatar } from "react-native-paper";
 import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
 function RegisterScreen() {
+
+    const navigation = useNavigation();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -27,7 +30,6 @@ function RegisterScreen() {
                 email: email,
                 password: password
             });
-            console.log(response);
             Alert.alert("Registration Successful", "Account created successfully.");
         } catch (error) {
             console.error(error);
@@ -64,7 +66,7 @@ function RegisterScreen() {
             <Button mode="contained" style={styles.mainButton} labelStyle={styles.buttonLabel} onPress={registerUser} buttonColor="#3f7af6">
                 Register
             </Button>
-            <Text style={styles.footerText}>Already have an account? <Text style={{ color: '#3f7af6' }}>Login</Text></Text>
+            <Text style={styles.footerText}>Already have an account? <Text style={{ color: '#3f7af6' }} onPress={() => navigation.navigate("LoginScreen")}>Login</Text></Text>
         </View>
     );
 }

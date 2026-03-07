@@ -10,8 +10,7 @@ function AddStudentScreen() {
                 <Appbar.Content title="Add Student" titleStyle={styles.headerTitle} />
             </Appbar.Header>
 
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                {/* Basic Info Section */}
+            <ScrollView contentContainerStyle={styles.Contentbox}>
                 <Card style={styles.formSection}>
                     <Text style={styles.label}>Name</Text>
                     <TextInput mode="outlined" placeholder="Name" style={styles.input} outlineColor="#e0e0e0" activeOutlineColor="#3f7af6" />
@@ -19,7 +18,6 @@ function AddStudentScreen() {
                     <TextInput mode="outlined" placeholder="Email" style={styles.input} outlineColor="#e0e0e0" activeOutlineColor="#3f7af6" />
                 </Card>
 
-                {/* Address Section */}
                 <Card style={styles.formSection}>
                     <Text style={styles.label}>Address</Text>
                     <TextInput
@@ -33,7 +31,6 @@ function AddStudentScreen() {
                     />
                 </Card>
 
-                {/* Course Section */}
                 <Card style={styles.formSection}>
                     <Text style={styles.label}>Course</Text>
                     <TextInput
@@ -73,7 +70,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 22
     },
-    scrollContent: {
+    Contentbox: {
         padding: 16
     },
     footerContainer: {
