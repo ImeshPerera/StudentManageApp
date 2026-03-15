@@ -1,24 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, Alert } from 'react-native';
 import { Appbar, Searchbar, IconButton } from 'react-native-paper';
 import CardComponent from '../components/CardComponent';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function SearchScreen() {
 
+    const navigation = useNavigation();
     const [data, setData] = useState([]);
+    const [filteredData, setFilteredData] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [loading, setLoading] = useState(false);
 
     async function loadstudents() {
+        setLoading(true);
         try {
+            const token = await AsyncStorage.getItem('token');
             const response = await axios.get("https://student-api.acpt.lk/api/student/getAll", {
                 headers: {
-                    Authorization: `Bearer 6095|fH1tyVmUmDPpTFu7doKXWb4Zoj99KkKk3VxA8gGV0f345408`
+                    Authorization: `Bearer ${token}`
                 }
             });
             setData(response.data);
-            console.log(response);
+            setFilteredData(response.data);
         } catch (error) {
             console.error(error);
+            Alert.alert("Error", "Failed to fetch students.");
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -26,30 +37,81 @@ function SearchScreen() {
         loadstudents();
     }, []);
 
+    const onChangeSearch = query => {
+        setSearchQuery(query);
+        if (query) {
+            const newData = data.filter(item => {
+                const itemData = item.student_name ? item.student_name.toUpperCase() : ''.toUpperCase();
+                const textData = query.toUpperCase();
+                return itemData.indexOf(textData) > -1;
+            });
+            setFilteredData(newData);
+        } else {
+            setFilteredData(data);
+        }
+    };
+
+    const handleDelete = (id) => {
+        Alert.alert(
+            "Delete Student",
+            "Are you sure you want to delete this student?",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            const token = await AsyncStorage.getItem('token');
+                            await axios.delete(`https://student-api.acpt.lk/api/student/delete/${id}`, {
+                                headers: {
+                                    Authorization: `Bearer ${token}`
+                                }
+                            });
+                            Alert.alert("Success", "Student deleted successfully.");
+                            loadstudents();
+                        } catch (error) {
+                            console.error(error);
+                            Alert.alert("Error", "Failed to delete student.");
+                        }
+                    }
+                }
+            ]
+        );
+    };
+
     return (
         <View style={styles.container}>
             <Appbar.Header style={styles.header}>
-                <Appbar.BackAction onPress={() => { }} />
+                <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Appbar.Content title="Search" titleStyle={styles.headerTitle} />
-                <Appbar.Action icon="tune-variant" onPress={() => { }} />
             </Appbar.Header>
 
             <View style={styles.content}>
                 <Searchbar
                     placeholder="Search students..."
-                    onChangeText={() => { }}
-                    value={''}
+                    onChangeText={onChangeSearch}
+                    value={searchQuery}
                     style={styles.searchBar}
                     iconColor="#3f7af6"
-                    right={() => <IconButton icon="filter-variant" size={20} />}
                 />
 
                 <FlatList
-                    keyExtractor={item => item.id}
-                    data={data}
+                    keyExtractor={item => item.id.toString()}
+                    data={filteredData}
                     renderItem={({ item }) => (
-                        <CardComponent studentName={item.student_name} phone={item.student_contact} email={item.student_address} icon="chevron-right" />
+                        <CardComponent 
+                            studentName={item.student_name} 
+                            phone={item.student_contact} 
+                            address={item.student_address} 
+                            age={item.student_age}
+                            icon="pencil-outline"
+                            onEdit={() => navigation.navigate("AddStudentScreen", { student: item })}
+                            onDelete={() => handleDelete(item.id)}
+                        />
                     )}
+                    onRefresh={loadstudents}
+                    refreshing={loading}
                 />
             </View>
         </View>

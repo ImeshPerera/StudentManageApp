@@ -9,12 +9,25 @@ function CardComponent(props) {
             <Card.Content>
                 <View style={styles.listHeader}>
                     <Text style={styles.studentName}>{props.studentName}</Text>
-                    <IconButton
-                        icon={props.icon}
-                        iconColor="#3f7af6"
-                        size={25}
-                        onPress={() => { }}
-                    />
+                    <View style={{ flexDirection: 'row' }}>
+                        <IconButton
+                            icon={props.icon}
+                            iconColor="#3f7af6"
+                            size={25}
+                            onPress={props.onEdit}
+                        />
+                        <IconButton
+                            icon="trash-can-outline"
+                            iconColor="#ff4d4d"
+                            size={25}
+                            onPress={props.onDelete}
+                        />
+                    </View>
+                </View>
+
+                <View style={styles.infoRow}>
+                    <Avatar.Icon size={20} icon="account-clock" style={styles.infoIcon} color="#7b8794" />
+                    <Text style={styles.infoText}>Age: {props.age}</Text>
                 </View>
 
                 <View style={styles.infoRow}>
@@ -23,8 +36,8 @@ function CardComponent(props) {
                 </View>
 
                 <View style={styles.infoRow}>
-                    <Avatar.Icon size={20} icon="email" style={styles.infoIcon} color="#7b8794" />
-                    <Text style={styles.infoText}>{props.email}</Text>
+                    <Avatar.Icon size={20} icon="map-marker" style={styles.infoIcon} color="#7b8794" />
+                    <Text style={styles.infoText}>{props.address}</Text>
                 </View>
             </Card.Content>
         </Card>
@@ -34,8 +47,11 @@ function CardComponent(props) {
 CardComponent.propTypes = {
     studentName: PropTypes.string.isRequired,
     phone: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    age: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     icon: PropTypes.string.isRequired,
+    onEdit: PropTypes.func,
+    onDelete: PropTypes.func,
 }
 
 const styles = StyleSheet.create({
